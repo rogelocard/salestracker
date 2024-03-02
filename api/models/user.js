@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema({
         type: "String"
     }],
     verified: { // Check whether a user has been authenticated or not. 
-        type: boolean,
+        type: Boolean,
         default: false
     },
     verificationToken: String,
