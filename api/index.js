@@ -5,7 +5,7 @@ const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 
 const app = express();
-const port = 3000;
+const port = 8000;
 const cors = require('cors')
 app.use(cors())
 
@@ -20,10 +20,7 @@ const User = require("./models/user")
 /**
  * Conection to the Database Atlas MongoDB
  */
-mongoose.connect("mongodb+srv://rsca:admin123@cluster0.qbz06cj.mongodb.net/", {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    }).then(() => {
+mongoose.connect("mongodb+srv://rsca:admin123@cluster0.qbz06cj.mongodb.net/").then(() => {
         console.log("Connected to MongoDB")
     }).catch((error) => {
         console.log("Error connecting to MongoDB", error)
@@ -71,8 +68,8 @@ const sendVerificationEmail = async (email, verificationToken) => {
     const transporter = nodemailer.createTransport({
         service: "gmail",
         auth:{
-            user:"...",
-            pass: "..."
+            user:"salestracker343@gmail.com",
+            pass: "fora xamy nuny uolt"
         }
     })
 
@@ -80,7 +77,7 @@ const sendVerificationEmail = async (email, verificationToken) => {
         from: "matchmake.com",
         to:email,
         subject: "Verficación de email",
-        text:`Por favor click en el siguiente link para verificar tu correo : http://localhost:3000/verify/${verificationToken}`
+        text:`Has click en el siguiente link para verificar tu correo : http://192.168.0.3:8000/verify/${verificationToken}`
     }
 
     // Send the email
@@ -100,17 +97,51 @@ const sendVerificationEmail = async (email, verificationToken) => {
         const token = req.params.token
         const user = await User.findOne({verificationToken:token})
         if (!user) {
-            return res.status(404).json({message:"Invalid verification token"})
+            return res.status(404).json({message:"Token de verificación invalido"})
         }
         //mark the user as verified
         user.verified = true  // We change the default value from the model to true
         user.verificationToken = undefined
 
         await user.save();
-        res.status(200).json({message:"Email verified Succesfully"})
+        res.status(200).json({message:"El email se verifico satisfactoriamente"})
 
     } catch (error) {
         console.log("error ", error)
-        res.status(500).json({message: "Email verification failed"})
+        res.status(500).json({message: "Fallo en la verificación del email"})
     }
  })
+
+const generateSecretKey = () => {
+    const secretKey = crypto.randomBytes(32).toString("hex");
+    return secretKey
+}
+
+const secretKey = generateSecretKey();
+
+/******************************
+ * API to LOGIN
+ ******************************
+ */
+app.post("/login", async(req, res) => {
+    try {
+        const {email, password} = req.body;
+
+        // Check if the user exists already
+        const user = await User.findOne({email});
+        if (!user) {
+            return res.status(401).json({message: "Email o contraseña invalidos"})
+        }
+
+        // Check if password is correct
+        if(user.password !== password){
+            return res.status(401).json({message:"Email o contraseña invalidos"})
+        }
+
+        const token = jwt.sign({userId:user._id, secretKey})
+        res.status(200).json({token})
+
+    } catch (error) {
+        res.status(500).json({message: "Falló en el login"})
+    }
+})

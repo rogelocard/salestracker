@@ -4,12 +4,30 @@ import salesTrackerImage from '../../assets/salesReport.png'
 import { MaterialIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const login = () => {
 
   const[email, setEmail] = useState("")
   const[password, setPassword] =useState("")
   const router = useRouter();
+
+  const handleLogin = () => {
+    const user = {
+      email: email, 
+      password: password
+    }
+    // router.replace("/(authenticate)/select")
+    axios
+      .post("http://192.168.0.3:8000/login", user)
+      .then((response) => {
+        console.log("Response: ", response)
+        const token = response.data.token
+        AsyncStorage.setItem("auth", token);
+        // router.replace("/(authenticate)/select")
+      })
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -56,7 +74,7 @@ const login = () => {
             <Text style={{color: "#007FFF", fontWeight:"500"}}>Olvidé mi Contraseña</Text>
           </View>
 
-          <Pressable style={styles.pressableStyle}>
+          <Pressable onPress={handleLogin} style={styles.pressableStyle}>
             <Text style={styles.pressableTextStyle}>Entrar</Text>
           </Pressable>
 

@@ -24,23 +24,20 @@ const register = () => {
 
         console.log("User infor before been sent", user)
 
-        axios.post("http://localhost:3000/register", user)
-        .then((resp) => {
-            console.log(resp)
-            Alert.alert('Registracion exitosa', 'Te has registrado exitosamente', [
-                {
-                text: 'Cancel',
-                onPress: () => console.log('Cancel Pressed'),
-                style: 'cancel',
-                },
-                {text: 'OK', onPress: () => console.log('OK Pressed')},
-            ]);
-            setEmail("")
+        axios
+          .post("http://192.168.0.3:8000/register", user)
+          .then((response) => {
+            console.log(response)
+            Alert.alert(
+              'Registración exitosa', 
+              'Te has registrado exitosamente'
+            );
             setName("")
+            setEmail("")
             setPassword("")
         }).catch((error) => {
             console.log("Error al registrar el usuario", error)
-            Alert.alert("La registracion fallo", "Un error ocurrio durante la registracion")
+            Alert.alert("Error en el registro", "Un error ocurrio durante la registración")
         })
     }
 
