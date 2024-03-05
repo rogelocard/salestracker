@@ -1,3 +1,10 @@
+/**
+ * Componente de la aplicación que muestra un informe de ventas y permite ver los detalles de cada venta en un modal.
+ * Utiliza la librería axios para realizar una solicitud GET a la API y obtener los registros de ventas.
+ * Los registros se muestran como botones en la pantalla principal y al hacer clic en ellos se abre un modal con los detalles de la venta.
+ * El modal muestra información como el vuelo, número de vuelo, fecha y una imagen relacionada.
+ * También proporciona opciones para descargar y cerrar el modal.
+ */
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import {
@@ -25,7 +32,7 @@ export default function App() {
       fetchRecordsData();
     }, []);
   };
-
+  // Estructura de la vista
   const [modalVisible, setModalVisible] = useState(false);
   return (
     <View style={styles.container}>
@@ -97,7 +104,7 @@ export default function App() {
     </View>
   );
 }
-
+// Estilos
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -154,16 +161,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: "70%", // Añade esta línea
+    width: "70%",
   },
   buttonModal: {
-    marginTop: 10, // Añade esta línea
-    marginBottom: 10, // Añade esta línea
+    marginTop: 10,
+    marginBottom: 10,
     backgroundColor: "#840032",
-    justifyContent: "center", // Añade esta línea
-    alignItems: "center", // Añade esta línea
-    width: "90%", // Añade esta línea
-    padding: 10, // Añade esta línea
+    justifyContent: "center",
+    alignItems: "center",
+    width: "90%",
+    padding: 10,
   },
   textStyle: {
     color: "white",

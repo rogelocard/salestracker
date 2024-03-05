@@ -154,16 +154,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: "70%", // Añade esta línea
+    width: "70%",
   },
   buttonModal: {
-    marginTop: 10, // Añade esta línea
-    marginBottom: 10, // Añade esta línea
+    marginTop: 10,
+    marginBottom: 10,
     backgroundColor: "#840032",
-    justifyContent: "center", // Añade esta línea
-    alignItems: "center", // Añade esta línea
-    width: "90%", // Añade esta línea
-    padding: 10, // Añade esta línea
+    justifyContent: "center",
+    alignItems: "center",
+    width: "90%",
+    padding: 10,
   },
   textStyle: {
     color: "white",
