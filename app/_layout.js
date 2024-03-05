@@ -1,9 +1,9 @@
-import { Stack } from "expo-router"; 
+import { Stack } from "expo-router";
 
-import React from 'react'
+import React from "react";
 
 const Layout = () => {
-  return <Stack />
-}
+  return <Stack />;
+};
 
-export default Layout
+export default Layout;
