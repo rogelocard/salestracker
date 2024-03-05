@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, Image, KeyboardAvoidingView, TextInput, Pressable } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, Image, KeyboardAvoidingView, TextInput, Pressable, Alert } from 'react-native'
 import React, { useState } from 'react'
 import salesTrackerImage from '../../assets/salesReport.png'
 import { MaterialIcons } from '@expo/vector-icons';
@@ -18,15 +18,15 @@ const login = () => {
       email: email, 
       password: password
     }
-    // router.replace("/(authenticate)/select")
-    axios
-      .post("http://192.168.0.3:8000/login", user)
-      .then((response) => {
+    axios.post("http://192.168.0.3:8000/login", user).then((response) => {
         console.log("Response: ", response)
         const token = response.data.token
         AsyncStorage.setItem("auth", token);
-        // router.replace("/(authenticate)/select")
-      })
+        router.replace("/(tabs)/profile")
+      }).catch((error) => {
+        console.log("Error al logearse", error)
+        Alert.alert("Error al logearse", "Email o Contraseña invalidos")
+    })
   }
 
   return (

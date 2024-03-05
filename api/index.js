@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 const app = express();
 const port = 8000;
@@ -35,35 +37,46 @@ app.listen(port, () => {
  *********************************************
  */
 app.post("/register", async(req, res) => {
-    console.log("Info recibida en el back para mandar a DB: ", req.body)
     try {
         const {name, email, password} =  req.body;
 
         //Check wether the email is already register
         const existingUser = await User.findOne({email});
         if (existingUser) {
-            res.status(400).json({message: "User already exists"})
+            // res.status(400).json({message: "User already exists"})
+           return res.status(400).json({message: "User already exists"})
         }
+
+        // Encrypt/Cypher text plain password, provided by the user
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
         // Create a new User
         const newUser = new User({
             name,
             email,
-            password
+            password: hashedPassword
         });
         //Generate a verification Token
         newUser.verificationToken = crypto.randomBytes(20).toString("hex");
 
         // Save the user to the backend
         await newUser.save();
-
+        console.log("Se guardo el nuevo usuario")
         //Send the verification email to the registered User
         sendVerificationEmail(newUser.email, newUser.verificationToken)
+        res.status(200).json({message:"Registration succeded"})
+
     } catch (error) {
         console.log("Error registering user")
         res.status(500).json({message:"Registration failed"})
     }
 })
 
+/**
+ * Function to send the email for verification
+ * @param {*} email registerd by the user
+ * @param {*} verificationToken created during registration
+ */
 const sendVerificationEmail = async (email, verificationToken) => {
     const transporter = nodemailer.createTransport({
         service: "gmail",
@@ -76,7 +89,7 @@ const sendVerificationEmail = async (email, verificationToken) => {
     const mailOptions = {
         from: "matchmake.com",
         to:email,
-        subject: "Verficación de email",
+        subject: "Verificación de email",
         text:`Has click en el siguiente link para verificar tu correo : http://192.168.0.3:8000/verify/${verificationToken}`
     }
 
@@ -104,7 +117,7 @@ const sendVerificationEmail = async (email, verificationToken) => {
         user.verificationToken = undefined
 
         await user.save();
-        res.status(200).json({message:"El email se verifico satisfactoriamente"})
+        res.status(200).json({message:"El email se verificó satisfactoriamente"})
 
     } catch (error) {
         console.log("error ", error)
@@ -129,16 +142,19 @@ app.post("/login", async(req, res) => {
 
         // Check if the user exists already
         const user = await User.findOne({email});
+        // console.log("user: ", user)
         if (!user) {
             return res.status(401).json({message: "Email o contraseña invalidos"})
         }
-
         // Check if password is correct
-        if(user.password !== password){
-            return res.status(401).json({message:"Email o contraseña invalidos"})
+        const isMatch = await bcrypt.compare(password, user.password)
+        if(!isMatch){
+            return res.status(401).json({message:"Contraseña invalidos"})
         }
-
-        const token = jwt.sign({userId:user._id, secretKey})
+        // if(user.password !== password){
+        //     return res.status(401).json({message:"Contraseña invalidos"})
+        // }
+        const token = jwt.sign({userId:user._id}, secretKey)
         res.status(200).json({token})
 
     } catch (error) {

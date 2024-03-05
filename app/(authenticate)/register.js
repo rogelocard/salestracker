@@ -21,25 +21,20 @@ const register = () => {
             email: email,
             password: password
         };
-
-        console.log("User infor before been sent", user)
-
+        
         axios
           .post("http://192.168.0.3:8000/register", user)
           .then((response) => {
             console.log(response)
-            Alert.alert(
-              'Registración exitosa', 
-              'Te has registrado exitosamente'
-            );
+            Alert.alert("Registración exitosa", "Te has registrado exitosamente")
             setName("")
             setEmail("")
             setPassword("")
         }).catch((error) => {
             console.log("Error al registrar el usuario", error)
-            Alert.alert("Error en el registro", "Un error ocurrio durante la registración")
+            Alert.alert("Error en el registro", "Un error ocurrio durante el registro")
         })
-    }
+    } 
 
   return (
     <SafeAreaView style={styles.container}>
