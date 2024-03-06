@@ -6,6 +6,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import axios from 'axios';
+import { API_HOST } from '@env'
 
 const register = () => {
 
@@ -16,14 +17,15 @@ const register = () => {
 
     // Handle Register form
     const handleRegister = () => {
+
         const user = {
             name: name,
             email: email,
             password: password
         };
-        
+        console.log("API: ", API_HOST)
         axios
-          .post("http://192.168.0.3:8000/register", user)
+          .post(`${API_HOST}/register`, user)
           .then((response) => {
             console.log(response)
             Alert.alert("Registración exitosa", "Te has registrado exitosamente")
