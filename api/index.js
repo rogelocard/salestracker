@@ -1,3 +1,10 @@
+require('dotenv').config();
+//.env variables
+const dbUri = process.env.DB_URI;
+const mailUser = process.env.MAIL_USER;
+const mailPass = process.env.MAIL_PASS;
+const apiHost = process.env.API_HOST;
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -22,7 +29,7 @@ const User = require("./models/user")
 /**
  * Conection to the Database Atlas MongoDB
  */
-mongoose.connect("mongodb+srv://rsca:admin123@cluster0.qbz06cj.mongodb.net/").then(() => {
+mongoose.connect(`${dbUri}`).then(() => {
         console.log("Connected to MongoDB")
     }).catch((error) => {
         console.log("Error connecting to MongoDB", error)
@@ -81,8 +88,8 @@ const sendVerificationEmail = async (email, verificationToken) => {
     const transporter = nodemailer.createTransport({
         service: "gmail",
         auth:{
-            user:"salestracker343@gmail.com",
-            pass: "fora xamy nuny uolt"
+            user: mailUser,
+            pass: mailPass
         }
     })
 
@@ -90,7 +97,7 @@ const sendVerificationEmail = async (email, verificationToken) => {
         from: "matchmake.com",
         to:email,
         subject: "Verificación de email",
-        text:`Has click en el siguiente link para verificar tu correo : http://192.168.0.3:8000/verify/${verificationToken}`
+        text:`Has click en el siguiente link para verificar tu correo : ${apiHost}/verify/${verificationToken}`
     }
 
     // Send the email

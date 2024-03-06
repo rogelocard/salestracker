@@ -23,11 +23,10 @@ const register = () => {
             email: email,
             password: password
         };
-        console.log("API: ", API_HOST)
         axios
           .post(`${API_HOST}/register`, user)
           .then((response) => {
-            console.log(response)
+            console.log("Se registro exitosamente")
             Alert.alert("Registración exitosa", "Te has registrado exitosamente")
             setName("")
             setEmail("")
